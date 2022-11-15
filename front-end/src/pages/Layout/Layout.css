@@ -1,0 +1,52 @@
+:root {
+    --primary-blue: #c1d1e5;
+    --text-gray: #bbbbbb;
+}
+
+.navbar-light .navbar-nav .active>.nav-link,
+.navbar-light .navbar-nav .nav-link.active,
+.navbar-light .navbar-nav .nav-link.show,
+.navbar-light .navbar-nav .show>.nav-link {
+    color: #000;
+    font-weight: bold;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.navbar #logo {
+    width: 80px;
+}
+
+.bg-light {
+    background-color: var(--primary-blue) !important;
+}
+
+.nav-link {
+    padding-left: 20px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d2e2f6;
+    position: sticky;
+    bottom: 0px;
+    z-index: 2;
+}
+
+.footer-container a {
+    color: gray;
+}
+
+.footer-container a:hover {
+    color: darkgray;
+}
+
+p {
+    margin: 0;
+}
