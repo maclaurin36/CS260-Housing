@@ -1,0 +1,49 @@
+.listing-card {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #dde0e4;
+    border-radius: 10px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.listing-card-image {
+    width: 40%;
+    min-width: 200px;
+    max-width: 500px;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.listing-card-info {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    min-width: 200px;
+    margin: 20px;
+    font-size: 16px;
+    padding: 0;
+    margin: 10px;
+}
+
+.listing-card-info li {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 5px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    align-items: center;
+    background-color: #ccc;
+}
+
+.listing-card-info .label {
+    font-weight: bold;
+    margin: 5px;
+}
+
+.listing-card-info .value {
+    margin: 5px;
+}

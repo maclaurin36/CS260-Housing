@@ -38,7 +38,7 @@ const Layout = () => {
 
             <div class="footer-container">
                 <p>
-                    <a target="_blank" rel="noreferrer noopener" href="https://github.com/maclaurin36/ReactCliProject/">View on Github</a>
+                    <a target="_blank" rel="noreferrer noopener" href="https://github.com/maclaurin36/CS260-housing">View on Github</a>
                 </p>
             </div>
         </>
