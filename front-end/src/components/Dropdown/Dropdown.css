@@ -1,0 +1,15 @@
+select:focus-visible {
+    border: none;
+    outline: none;
+    background-color: white;
+}
+
+select {
+    margin: 5px;
+    border: none;
+    text-align: right;
+    flex: 1;
+    border-radius: 5px;
+    min-width: 0;
+    background-color: #e0e0e0;
+}

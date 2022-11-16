@@ -1,19 +1,49 @@
 .listing-card {
     width: 70%;
-    display: flex;
-    flex-wrap: wrap;
     background-color: #dde0e4;
     border-radius: 10px;
+}
+
+.listing-card h1 {
+    text-align: center;
+}
+
+.image-info-container {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
 }
 
+.image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .listing-card-image {
-    width: 40%;
+    border-radius: 5px;
+    width: 80%;
     min-width: 200px;
     max-width: 500px;
-    border-radius: 5px;
     margin: 20px;
+}
+
+.image-selector {
+    cursor: pointer;
+    background-color: #8ec4fb;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.image-selector:hover {
+    background-color: #7db3ea;
+}
+
+.image-selector input {
+    display: none;
 }
 
 .listing-card-info {
@@ -21,7 +51,6 @@
     flex-direction: column;
     width: 40%;
     min-width: 200px;
-    margin: 20px;
     font-size: 16px;
     padding: 0;
     margin: 10px;
@@ -46,4 +75,36 @@
 
 .listing-card-info .value {
     margin: 5px;
+    border: none;
+    text-align: right;
+    flex: 1;
+    border-radius: 5px;
+    min-width: 0;
+    background-color: #e0e0e0;
+}
+
+.listing-card-info .value:focus-visible {
+    border: none;
+    outline: none;
+    background-color: white;
+}
+
+.button-menu {
+    display: flex;
+    justify-content: center;
+}
+
+.button-menu button {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    background-color: #7cc5ff;
+    border-radius: 15px;
+    font-weight: bold;
+    width: 100px;
+}
+
+.button-menu button:hover {
+    background-color: #6bb4ee;
+    cursor: pointer;
 }

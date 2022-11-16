@@ -1,42 +1,171 @@
 import { useState, useEffect } from 'react';
 import './HomeListing.css';
+import Toggle from '../components/Toggle/Toggle.js';
+import Dropdown from '../components/Dropdown/Dropdown.js';
+import axios from 'axios';
 
 const HomeListing = (props) => {
-    let listing = props.listing;
-    console.log(listing);
+    const [listing, setListing] = useState({});
+    const [renters, setRenters] = useState([]);
+    const [file, setFile] = useState(null);
+
+    useEffect(() => {
+        const getRenters = async () => {
+            try {
+                let renterList = await axios.get('/api/renters');
+                setRenters(renterList.data.renters);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        };
+        getRenters();
+        let date = new Date(props.listing.availabilityDate);
+        props.listing.formattedDate = date.toLocaleDateString();
+        setListing(props.listing);
+    }, [props]);
+
+    const fileUploadHandler = async () => {
+        let data = new FormData();
+        data.append('file', file, file.name);
+        try {
+            let response = await axios.post("/api/imageUpload", data, {
+                headers: {
+                    'accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                }
+            });
+            return response.data.filePath;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
     
-    const parkingAvailable = () => {
-        if (listing.hasParking) {
-            return "included";
+    const saveItem = async () => {
+        if (file !== null && file !== undefined) {
+            listing.photo = await fileUploadHandler();
+            setFile(null);
         }
-        else {
-            return "unavailable";
+        
+        await axios.put('/api/listings/' + listing.id, {
+            availabilityDate: listing.availabilityDate,
+            location: listing.location,
+            housingType: listing.housingType,
+            price: listing.price,
+            numBedrooms: listing.numBedrooms,
+            numBathrooms: listing.numBathrooms,
+            hasParking: listing.hasParking,
+            photo: listing.photo,
+            renterId: listing.renterId,
+        });
+        alert("Your changes have been saved!");
+    };
+
+    const handleAddressChange = (e) => {
+        let newListing = listing;
+        newListing.location = e.target.value;
+        setListing(newListing);
+    };
+
+    const handleDateChange = (e) => {
+        let newListing = listing;
+        newListing.availabilityDate = new Date(e.target.value);
+        setListing(newListing);
+    };
+
+    const handleParkingChange = (hasParking) => {
+        let newListing = listing;
+        newListing.hasParking = hasParking;
+        setListing(newListing);
+    };
+
+    const handleNumBathroomChange = (e) => {
+        let newListing = listing;
+        newListing.numBathrooms = parseFloat(e.target.value);
+        setListing(newListing);
+    };
+
+    const handleNumBedroomChange = (e) => {
+        let newListing = listing;
+        newListing.numBedrooms = parseFloat(e.target.value);
+        setListing(newListing);
+    };
+
+    const handlePriceChange = (e) => {
+        let newListing = listing;
+        newListing.price = parseFloat(e.target.value);
+        setListing(newListing);
+    };
+
+    const handleAvailableChange = (renterId) => {
+        if (renterId === "") {
+            renterId = null;
         }
-    }
+        let newListing = listing;
+        newListing.renterId = renterId;
+        setListing(newListing);
+    };
+
+    const fileSelectedHandler = (e) => {
+        setFile(e.target.files[0]);
+    };
     
-    const isAvailable = () => {
-        if (listing.renterId !== null) {
-            return "SOLD";
+    const formatFileName = () => {
+        if (file !== null && file != undefined) {
+            return " - " + file.name;
         }
-        else {
-            return "Available";
-        }
-    }
-    
+        return "";
+    };
+
     return (
         <div class="listing-card">
-            <img class="listing-card-image" src="https://cdn.shopify.com/s/files/1/0150/0232/products/Pearl_Valley_Sharp_Cheddar_Slices_900x.jpg?v=1524073010" alt="cheese" />
-            <ul class="listing-card-info">
-                <li><span class="label">Address: </span><span class="value">{listing.location}</span></li>
-                <li><span class="label">Date Available: </span><span class="value">{new Date(listing.availabilityDate).toLocaleDateString()}</span></li>
-                <li><span class="label">Parking: </span><span class="value">{parkingAvailable()}</span></li>
-                <li><span class="label">Number of Bathrooms: </span><span class="value">{listing.numBathrooms}</span></li>
-                <li><span class="label">Number of Bedrooms: </span><span class="value">{listing.numBedrooms}</span></li>
-                <li><span class="label">Price: </span><span class="value">${listing.price}</span></li>
-                <li><span class="label">Status: </span><span class="value">{isAvailable()}</span></li>
-            </ul>
+            <h1>{listing.location}</h1>
+            <div class="image-info-container">
+                <div class="image-container">
+                    <img class="listing-card-image" src={"http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo} alt={listing.photo} />
+                    <label class="image-selector">
+                        Change Image {formatFileName()}
+                        <input id="listing-image" type="file" onChange={fileSelectedHandler}/>
+                    </label>
+                </div>
+                <ul class="listing-card-info">
+                    <li>
+                        <span class="label">Address: </span>
+                        <input type="test" class="value" defaultValue={listing.location} onChange={(e) => handleAddressChange(e)}/>
+                    </li>
+                    <li>
+                        <span class="label">Date Available: </span>
+                        <input type="text" class="value" defaultValue={listing.formattedDate} onChange={(e) => handleDateChange(e)}/>
+                    </li>
+                    <li>
+                        <span class="label">Parking: </span>
+                        <Toggle isChecked={props.listing.hasParking} notify={handleParkingChange}/>
+                    </li>
+                    <li>
+                        <span class="label">Number of Bathrooms: </span>
+                        <input type="text" class="value" defaultValue={listing.numBathrooms} onChange={(e) => handleNumBathroomChange(e)}/>
+                    </li>
+                    <li>
+                        <span class="label">Number of Bedrooms: </span>
+                        <input type="text" class="value" defaultValue={listing.numBedrooms} onChange={(e) => handleNumBedroomChange(e)}/>
+                    </li>
+                    <li>
+                        <span class="label">Price: $</span>
+                        <input type="text" class="value" defaultValue={listing.price} onChange={(e) => handlePriceChange(e)}/>
+                    </li>
+                    <li>
+                        <span class="label">Sold To: </span>
+                        <Dropdown propOptions={renters} selected={listing.renterId} notify={handleAvailableChange}/>
+                    </li>
+                </ul>
+            </div>
+            <div class="button-menu">
+                <button onClick={saveItem}>Save</button>
+            </div>
         </div>
     );
-}
+};
 
 export default HomeListing;

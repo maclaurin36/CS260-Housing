@@ -3,6 +3,12 @@ const bodyParser = require("body-parser");
 const mongo = require('mongodb');
 var objectId = require('mongodb').ObjectId;
 
+const formidable = require('formidable'),
+    http = require('http'),
+    util = require('util');
+
+const fs = require('fs');
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -18,6 +24,7 @@ mongoose.connect('mongodb://localhost:27017/homes', {
 });
 
 const listingSchema = new mongoose.Schema({
+    listingTitle: String,
     availabilityDate: Date,
     location: String,
     housingType: String,
@@ -93,6 +100,7 @@ app.get('/api/renters', async (req, res) => {
 app.post('/api/listings', async (req, res) => {
     console.log('hello');
     const listing = new Listing({
+        listingTitle: req.body.listingTitle,
         availabilityDate: req.body.availabilityDate,
         location: req.body.location,
         housingType: req.body.housingType,
@@ -140,6 +148,36 @@ app.post('/api/renters', async (req, res) => {
     }
 });
 
+app.post('/api/imageUpload', async (req, res) => {
+    var form = new formidable.IncomingForm();
+
+    // form.parse analyzes the incoming stream data, picking apart the different fields and files for you.
+
+    form.parse(req, function(err, fields, files) {
+        if (err) {
+            // Check for and handle any errors here.
+            console.error(err.message);
+            return;
+        }
+
+        res.send({
+            filePath: files.file.originalFilename
+        });
+        
+        let oldFilePath = files.file.filepath;
+        let newFilePath = "/home/ubuntu/environment/public_html/housing/front-end/src/images/" + files.file.originalFilename;
+
+        fs.readFile(oldFilePath, function(err, data) {
+            fs.writeFile(newFilePath, data, function(err) {
+                fs.unlink(oldFilePath, function() {
+                    console.log(err);
+                    console.log('finished');
+                });
+            });
+        });
+    });
+});
+
 app.delete('/api/listings/:id', async (req, res) => {
     try {
         await Listing.deleteOne({
@@ -171,6 +209,7 @@ app.put('/api/listings/:id', async (req, res) => {
     Listing.findById(objectId(id))
         .then(async (document) => {
             console.log(document);
+            document.listingTitle = req.body.listingTitle;
             document.availabilityDate = req.body.availabilityDate;
             document.location = req.body.location;
             document.housingType = req.body.housingType;
