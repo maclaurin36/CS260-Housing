@@ -8,7 +8,7 @@ const Layout = () => {
     let listingsActive = location.pathname === '/listings' ? ' active' : '';
     return (
         <>
-            <div>
+            <div class="non-footer">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <Link class="navbar-brand" to="/">
                     <img id='logo' alt="Jesse Clark Logo" src={logo} />

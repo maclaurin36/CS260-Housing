@@ -33,7 +33,7 @@
 
 .image-selector {
     cursor: pointer;
-    background-color: #8ec4fb;
+    background-color: #f0e588;
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
@@ -41,7 +41,7 @@
 }
 
 .image-selector:hover {
-    background-color: #7db3ea;
+    background-color: #e0d477;
 }
 
 .image-selector input {
@@ -100,13 +100,29 @@
     padding: 10px;
     margin: 10px;
     border: none;
-    background-color: #7cc5ff;
+    
     border-radius: 15px;
     font-weight: bold;
     width: 100px;
 }
 
 .button-menu button:hover {
-    background-color: #6bb4ee;
+    
     cursor: pointer;
+}
+
+.delete-button {
+    background-color: #ff5050;
+}
+
+.delete-button:hover {
+    background-color: #ee4040;
+}
+
+.save-button {
+    background-color: #7cc5ff;
+}
+
+.save-button:hover {
+    background-color: #6bb4ee;
 }

@@ -205,8 +205,8 @@ const HomeListing = (props) => {
                 </ul>
             </div>
             <div class="button-menu">
-                <button onClick={saveItem}>Save</button>
-                <button onClick={deleteItem}>Delete</button>
+                <button class="save-button" onClick={saveItem}>Save</button>
+                <button class="delete-button" onClick={deleteItem}>Delete</button>
             </div>
         </div>
     );
