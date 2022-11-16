@@ -6,7 +6,6 @@ const Layout = () => {
     let homeActive = location.pathname === '/' ? ' active' : '';
     let rentersActive = location.pathname === '/renters' ? ' active' : '';
     let listingsActive = location.pathname === '/listings' ? ' active' : '';
-    console.log(location.pathname)
     return (
         <>
             <div>

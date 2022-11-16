@@ -24,7 +24,6 @@ mongoose.connect('mongodb://localhost:27017/homes', {
 });
 
 const listingSchema = new mongoose.Schema({
-    listingTitle: String,
     availabilityDate: Date,
     location: String,
     housingType: String,
@@ -98,9 +97,7 @@ app.get('/api/renters', async (req, res) => {
 });
 
 app.post('/api/listings', async (req, res) => {
-    console.log('hello');
     const listing = new Listing({
-        listingTitle: req.body.listingTitle,
         availabilityDate: req.body.availabilityDate,
         location: req.body.location,
         housingType: req.body.housingType,
@@ -209,7 +206,6 @@ app.put('/api/listings/:id', async (req, res) => {
     Listing.findById(objectId(id))
         .then(async (document) => {
             console.log(document);
-            document.listingTitle = req.body.listingTitle;
             document.availabilityDate = req.body.availabilityDate;
             document.location = req.body.location;
             document.housingType = req.body.housingType;

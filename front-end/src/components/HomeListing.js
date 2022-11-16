@@ -9,6 +9,9 @@ const HomeListing = (props) => {
     const [renters, setRenters] = useState([]);
     const [file, setFile] = useState(null);
 
+    let removeSelf = props.removeSelf;
+    let notify = props.notify;
+
     useEffect(() => {
         const getRenters = async () => {
             try {
@@ -42,25 +45,58 @@ const HomeListing = (props) => {
             console.log(error);
         }
     };
-    
+
     const saveItem = async () => {
         if (file !== null && file !== undefined) {
             listing.photo = await fileUploadHandler();
             setFile(null);
         }
         
-        await axios.put('/api/listings/' + listing.id, {
-            availabilityDate: listing.availabilityDate,
-            location: listing.location,
-            housingType: listing.housingType,
-            price: listing.price,
-            numBedrooms: listing.numBedrooms,
-            numBathrooms: listing.numBathrooms,
-            hasParking: listing.hasParking,
-            photo: listing.photo,
-            renterId: listing.renterId,
-        });
+        if (listing.renterId === "") {
+            listing.renterId = null;
+        }
+
+        if (listing.isNew) {
+            await axios.post('/api/listings', {
+                availabilityDate: listing.availabilityDate,
+                location: listing.location,
+                housingType: listing.housingType,
+                price: listing.price,
+                numBedrooms: listing.numBedrooms,
+                numBathrooms: listing.numBathrooms,
+                hasParking: listing.hasParking,
+                photo: listing.photo,
+                renterId: listing.renterId
+            })
+        
+        }
+        else {
+            await axios.put('/api/listings/' + listing.id, {
+                availabilityDate: listing.availabilityDate,
+                location: listing.location,
+                housingType: listing.housingType,
+                price: listing.price,
+                numBedrooms: listing.numBedrooms,
+                numBathrooms: listing.numBathrooms,
+                hasParking: listing.hasParking,
+                photo: listing.photo,
+                renterId: listing.renterId,
+            });
+        }
+        notify();
         alert("Your changes have been saved!");
+    };
+
+    const deleteItem = async () => {
+        try {
+            if (listing.isNew === undefined) {
+                await axios.delete("/api/listings/" + listing.id);
+            }
+        }
+        catch (exception) {
+            console.log(exception);
+        }
+        removeSelf(listing);
     };
 
     const handleAddressChange = (e) => {
@@ -111,10 +147,17 @@ const HomeListing = (props) => {
     const fileSelectedHandler = (e) => {
         setFile(e.target.files[0]);
     };
-    
+
     const formatFileName = () => {
         if (file !== null && file != undefined) {
             return " - " + file.name;
+        }
+        return "";
+    };
+    
+    const getImageUrl = () => {
+        if (listing.photo !== undefined) {
+            return "http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo
         }
         return "";
     };
@@ -124,7 +167,7 @@ const HomeListing = (props) => {
             <h1>{listing.location}</h1>
             <div class="image-info-container">
                 <div class="image-container">
-                    <img class="listing-card-image" src={"http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo} alt={listing.photo} />
+                    <img class="listing-card-image" src={getImageUrl()} alt={listing.photo} />
                     <label class="image-selector">
                         Change Image {formatFileName()}
                         <input id="listing-image" type="file" onChange={fileSelectedHandler}/>
@@ -163,6 +206,7 @@ const HomeListing = (props) => {
             </div>
             <div class="button-menu">
                 <button onClick={saveItem}>Save</button>
+                <button onClick={deleteItem}>Delete</button>
             </div>
         </div>
     );
