@@ -42,8 +42,7 @@ const renterProfileSchema = new mongoose.Schema({
     lowerPriceRange: Number,
     upperPriceRange: Number,
     desiredMoveInDate: Date,
-    photo: String,
-    listingClaimedId: String
+    photo: String
 })
 
 // create a virtual paramter that turns the default _id field into id
@@ -88,6 +87,20 @@ app.get('/api/renters', async (req, res) => {
         let renters = await Renter.find();
         res.send({
             renters: renters
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+app.get('/api/renterListings/:id', async (req, res) => {
+    try {
+        let id = req.params.id;
+        let listings = await Listing.find({renterId: id});
+        res.send({
+            listings: listings
         });
     }
     catch (error) {
@@ -237,7 +250,7 @@ app.put('/api/renters/:id', async (req, res) => {
             document.upperPriceRange = req.body.upperPriceRange;
             document.desiredMoveInDate = req.body.desiredMoveInDate;
             document.photo = req.body.photo;
-            document.listingClaimedId = req.body.listingId;
+            await document.save();
             res.send({
                 renter: document
             });

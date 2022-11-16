@@ -1,0 +1,132 @@
+.profile-card {
+    width: 70%;
+    background-color: #dde0e4;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.profile-card h1 {
+    text-align: center;
+}
+
+.image-info-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-card-image {
+    border-radius: 5px;
+    width: 80%;
+    min-width: 200px;
+    max-width: 500px;
+    margin: 20px;
+}
+
+.image-selector {
+    cursor: pointer;
+    background-color: #f0e588;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.image-selector:hover {
+    background-color: #e0d477;
+}
+
+.image-selector input {
+    display: none;
+}
+
+.profile-card-info {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    min-width: 200px;
+    font-size: 16px;
+    padding: 0;
+    margin: 10px;
+}
+
+.profile-card-info li {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 5px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    align-items: center;
+    background-color: #ccc;
+}
+
+.profile-card-info .label {
+    font-weight: bold;
+    margin: 5px;
+}
+
+.profile-card-info .value {
+    margin: 5px;
+    border: none;
+    text-align: right;
+    flex: 1;
+    border-radius: 5px;
+    min-width: 0;
+    background-color: #e0e0e0;
+}
+
+.profile-card-info .value:focus-visible {
+    border: none;
+    outline: none;
+    background-color: white;
+}
+
+.listings-rented {
+    margin: 0 5px;
+}
+
+.button-menu {
+    display: flex;
+    justify-content: center;
+}
+
+.button-menu button {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    
+    border-radius: 15px;
+    font-weight: bold;
+    width: 100px;
+}
+
+.button-menu button:hover {
+    
+    cursor: pointer;
+}
+
+.delete-button {
+    background-color: #ff5050;
+}
+
+.delete-button:hover {
+    background-color: #ee4040;
+}
+
+.save-button {
+    background-color: #7cc5ff;
+}
+
+.save-button:hover {
+    background-color: #6bb4ee;
+}

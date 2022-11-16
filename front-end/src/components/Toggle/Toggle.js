@@ -16,7 +16,7 @@ const Toggle = (props) => {
     return (
         <label class="switch">
             <input type="checkbox" defaultChecked={props.isChecked} onClick={(e) => setOn(current => !current)}/>
-            <span id="rented" class="slider round value"></span>
+            <span class="slider round value"></span>
         </label>
     );
 };

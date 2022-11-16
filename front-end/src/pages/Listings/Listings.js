@@ -2,12 +2,10 @@ import HomeListing from "../../components/HomeListing.js";
 import './Listings.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import FormData from 'form-data';
 import { v4 as uuidv4 } from 'uuid';
 
 const Listings = () => {
     const [listings, setListings] = useState([]);
-    const [file, setFile] = useState(null);
 
     const getListings = async () => {
         try {
@@ -43,10 +41,11 @@ const Listings = () => {
     };
     
     const removeListing = (listing) => {
-        let listingIndex = listings.find(storedListing => storedListing.id === listing.id);
-        let newListingList = listings.slice(listingIndex, -1);
-        setListings(newListingList);
-    }
+        let listingIndex = listings.indexOf(listings.find(storedListing => storedListing.id === listing.id));
+        listings.splice(listingIndex, 1);
+        let newListings = listings.slice();
+        setListings(newListings);
+    };
 
     return (
         <div class="page-container">

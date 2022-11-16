@@ -84,7 +84,6 @@ const HomeListing = (props) => {
             });
         }
         notify();
-        alert("Your changes have been saved!");
     };
 
     const deleteItem = async () => {
