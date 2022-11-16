@@ -43,7 +43,7 @@ const renterProfileSchema = new mongoose.Schema({
     upperPriceRange: Number,
     desiredMoveInDate: Date,
     photo: String
-})
+});
 
 // create a virtual paramter that turns the default _id field into id
 listingSchema.virtual('id')

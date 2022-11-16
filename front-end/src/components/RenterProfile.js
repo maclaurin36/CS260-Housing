@@ -143,20 +143,6 @@ const RenterProfile = (props) => {
         return "";
     };
 
-    const getOwnedListings = () => {
-        const getOwned = async () => {
-            let response = await axios.get('/api/renterListings/' + profile.id);
-            let locations = response.data.listings.map((listing) => listing.location)
-            return locations.join(', ');
-        }
-
-        if (profile.id !== null && profile.id !== undefined) {
-            return getOwned();
-        }
-
-        return "";
-    }
-
     return (
         <div class="profile-card">
             <h1>{profile.name}</h1>

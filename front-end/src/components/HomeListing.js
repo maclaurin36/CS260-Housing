@@ -67,7 +67,7 @@ const HomeListing = (props) => {
                 hasParking: listing.hasParking,
                 photo: listing.photo,
                 renterId: listing.renterId
-            })
+            });
         
         }
         else {
@@ -156,7 +156,7 @@ const HomeListing = (props) => {
     
     const getImageUrl = () => {
         if (listing.photo !== undefined) {
-            return "http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo
+            return "http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo;
         }
         return "";
     };
