@@ -189,7 +189,7 @@ app.post('/api/housing/register', async (req, res) => {
         }
     }
     catch (error) {
-        res.sendStatus(500);
+        res.sendStatus(400);
     }
 });
 
@@ -200,7 +200,7 @@ app.post('/api/housing/login', async (req, res) => {
             token: admin[0].id
         });
     } else {
-        res.sendStatus(500);
+        res.sendStatus(400);
     }
 });
 

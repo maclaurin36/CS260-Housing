@@ -6,11 +6,14 @@ import './Login.css';
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null);
     
     const { onLogin } = useContext(authContext);
     
     const login = async () => {
+        setMessage("");
+        setLoading(true);
         try {
             const newToken = await axios.post('/api/housing/login', {
                 username: username,
@@ -21,6 +24,7 @@ const Login = () => {
         catch (error) {
             setMessage("Invalid login credentials!");
         }
+        setLoading(false);
     };
     
     return (
@@ -39,7 +43,7 @@ const Login = () => {
                         <input class="textbox" type="password" onChange={(e) => setPassword(e.target.value)}/>
                     </label>
                 </div>
-                <button class="login-button" onClick={(e) => login()}>Sign In</button>
+                <button class="login-button" onClick={(e) => login()}>{loading ? "Loading..." : "Sign In"}</button>
                 {
                     message && (
                         <p>{message}</p>
