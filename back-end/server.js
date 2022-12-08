@@ -45,6 +45,11 @@ const renterProfileSchema = new mongoose.Schema({
     photo: String
 });
 
+const adminSchema = new mongoose.Schema({
+    username: String,
+    password: String
+});
+
 // create a virtual paramter that turns the default _id field into id
 listingSchema.virtual('id')
     .get(function() {
@@ -52,6 +57,11 @@ listingSchema.virtual('id')
     });
 
 renterProfileSchema.virtual('id')
+    .get(function() {
+        return this._id.toHexString();
+    });
+
+adminSchema.virtual('id')
     .get(function() {
         return this._id.toHexString();
     });
@@ -65,11 +75,16 @@ renterProfileSchema.set('toJSON', {
     virtuals: true
 });
 
+adminSchema.set('toJSON', {
+    virtuals: true
+});
+
 // Get a reference to the collections
 const Listing = mongoose.model('Listing', listingSchema);
 const Renter = mongoose.model('Renter', renterProfileSchema);
+const Admin = mongoose.model('Admin', adminSchema);
 
-app.get('/api/listings', async (req, res) => {
+app.get('/api/housing/listings', async (req, res) => {
     try {
         let listings = await Listing.find();
         res.send({
@@ -82,7 +97,7 @@ app.get('/api/listings', async (req, res) => {
     }
 });
 
-app.get('/api/renters', async (req, res) => {
+app.get('/api/housing/renters', async (req, res) => {
     try {
         let renters = await Renter.find();
         res.send({
@@ -95,7 +110,7 @@ app.get('/api/renters', async (req, res) => {
     }
 });
 
-app.get('/api/renterListings/:id', async (req, res) => {
+app.get('/api/housing/renterListings/:id', async (req, res) => {
     try {
         let id = req.params.id;
         let listings = await Listing.find({renterId: id});
@@ -109,7 +124,7 @@ app.get('/api/renterListings/:id', async (req, res) => {
     }
 });
 
-app.post('/api/listings', async (req, res) => {
+app.post('/api/housing/listings', async (req, res) => {
     const listing = new Listing({
         availabilityDate: req.body.availabilityDate,
         location: req.body.location,
@@ -134,7 +149,7 @@ app.post('/api/listings', async (req, res) => {
     }
 });
 
-app.post('/api/renters', async (req, res) => {
+app.post('/api/housing/renters', async (req, res) => {
     const renter = new Renter({
         name: req.body.name,
         age: req.body.age,
@@ -158,10 +173,39 @@ app.post('/api/renters', async (req, res) => {
     }
 });
 
-app.post('/api/imageUpload', async (req, res) => {
-    var form = new formidable.IncomingForm();
+app.post('/api/housing/register', async (req, res) => {
+    let admin = new Admin({
+        username: req.body.username,
+        password: req.body.password
+    });
+    
+    try {
+        let savedAdmin = await Admin.find({username: req.body.username, password: req.body.password});
+        if (savedAdmin.length === 0) {
+            await admin.save();
+            res.sendStatus(200);
+        } else {
+            throw "User already exists";
+        }
+    }
+    catch (error) {
+        res.sendStatus(500);
+    }
+});
 
-    // form.parse analyzes the incoming stream data, picking apart the different fields and files for you.
+app.post('/api/housing/login', async (req, res) => {
+    let admin = await Admin.find({username: req.body.username, password: req.body.password});
+    if (admin.length === 1) {
+        res.send({
+            token: admin[0].id
+        });
+    } else {
+        res.sendStatus(500);
+    }
+});
+
+app.post('/api/housing/imageUpload', async (req, res) => {
+    var form = new formidable.IncomingForm();
 
     form.parse(req, function(err, fields, files) {
         if (err) {
@@ -188,7 +232,7 @@ app.post('/api/imageUpload', async (req, res) => {
     });
 });
 
-app.delete('/api/listings/:id', async (req, res) => {
+app.delete('/api/housing/listings/:id', async (req, res) => {
     try {
         await Listing.deleteOne({
             _id: req.params.id
@@ -201,7 +245,7 @@ app.delete('/api/listings/:id', async (req, res) => {
     }
 });
 
-app.delete('/api/renters/:id', async (req, res) => {
+app.delete('/api/housing/renters/:id', async (req, res) => {
     try {
         await Renter.deleteOne({
             _id: req.params.id
@@ -214,7 +258,7 @@ app.delete('/api/renters/:id', async (req, res) => {
     }
 });
 
-app.put('/api/listings/:id', async (req, res) => {
+app.put('/api/housing/listings/:id', async (req, res) => {
     let id = req.params.id;
     Listing.findById(objectId(id))
         .then(async (document) => {
@@ -238,7 +282,7 @@ app.put('/api/listings/:id', async (req, res) => {
         });
 });
 
-app.put('/api/renters/:id', async (req, res) => {
+app.put('/api/housing/renters/:id', async (req, res) => {
     let id = req.params.id;
     Renter.findById(objectId(id))
         .then(async (document) => {

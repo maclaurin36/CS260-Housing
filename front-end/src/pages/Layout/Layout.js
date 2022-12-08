@@ -1,11 +1,17 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import "./Layout.css"
 import logo from "../../images/Logo.png"
+import { useContext } from 'react';
+import { authContext } from '../../components/AuthProvider/AuthProvider.js';
+
 const Layout = () => {
     let location = useLocation();
     let homeActive = location.pathname === '/' ? ' active' : '';
     let rentersActive = location.pathname === '/renters' ? ' active' : '';
     let listingsActive = location.pathname === '/listings' ? ' active' : '';
+    let loginActive = location.pathname === '/login' ? ' active' : '';
+    let registerActive = location.pathname === '/register' ? ' active' : '';
+    let { onLogout, token } = useContext(authContext);
     return (
         <>
             <div class="non-footer">
@@ -21,12 +27,29 @@ const Layout = () => {
                         <li class="nav-item">
                             <Link class={"nav-link" + homeActive} to="/">Home</Link>
                         </li>
-                        <li class="nav-item">
-                            <Link class={"nav-link" + rentersActive} to="/renters">Renters</Link>
-                        </li>
-                        <li class="nav-item">
-                            <Link class={"nav-link" + listingsActive} to="/listings">Listings</Link>
-                        </li>
+                        {!token && (
+                            <li class="nav-item">
+                                <Link class={"nav-link" + loginActive} to="/login">Login</Link>
+                            </li>
+                        )}
+                        {token && (
+                            <>
+                                <li class="nav-item">
+                                    <Link class={"nav-link" + rentersActive} to="/renters">Manage Renters</Link>
+                                </li>
+                                <li class="nav-item">
+                                    <Link class={"nav-link" + listingsActive} to="/listings">Manage Listings</Link>
+                                </li>
+                                <li class="nav-item">
+                                    <Link class={"nav-link" + registerActive} to="/register">Register/Update Admin</Link>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                    <button id='signout-button' onClick={onLogout}>Sign Out</button>
+                                    </a>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </nav>

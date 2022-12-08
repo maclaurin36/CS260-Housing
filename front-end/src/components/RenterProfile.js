@@ -7,13 +7,14 @@ const RenterProfile = (props) => {
     const [profile, setProfile] = useState({});
     const [ownedListings, setOwnedListings] = useState("");
     const [file, setFile] = useState(null);
+    const [saving, setSaving] = useState("Save");
 
     let removeSelf = props.removeSelf;
     let notify = props.notify;
 
     useEffect(() => {
         const getOwned = async () => {
-            let response = await axios.get('/api/renterListings/' + props.profile.id);
+            let response = await axios.get('/api/housing/renterListings/' + props.profile.id);
             let locations = response.data.listings.map((listing) => listing.location);
             setOwnedListings(locations.join(', '));
         };
@@ -31,7 +32,7 @@ const RenterProfile = (props) => {
         let data = new FormData();
         data.append('file', file, file.name);
         try {
-            let response = await axios.post("/api/imageUpload", data, {
+            let response = await axios.post("/api/housing/imageUpload", data, {
                 headers: {
                     'accept': 'application/json',
                     'Accept-Language': 'en-US,en;q=0.8',
@@ -46,13 +47,14 @@ const RenterProfile = (props) => {
     };
 
     const saveItem = async () => {
+        setSaving("Saving...");
         if (file !== null && file !== undefined) {
             profile.photo = await fileUploadHandler();
             setFile(null);
         }
 
         if (profile.isNew) {
-            await axios.post('/api/renters', {
+            await axios.post('/api/housing/renters', {
                 desiredMoveInDate: profile.desiredMoveInDate,
                 name: profile.name,
                 age: profile.age,
@@ -64,7 +66,7 @@ const RenterProfile = (props) => {
 
         }
         else {
-            await axios.put('/api/renters/' + profile.id, {
+            await axios.put('/api/housing/renters/' + profile.id, {
                 desiredMoveInDate: profile.desiredMoveInDate,
                 name: profile.name,
                 age: profile.age,
@@ -75,12 +77,14 @@ const RenterProfile = (props) => {
             });
         }
         notify();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setSaving("Save");
     };
 
     const deleteItem = async () => {
         try {
             if (profile.isNew === undefined) {
-                await axios.delete("/api/renters/" + profile.id);
+                await axios.delete("/api/housing/renters/" + profile.id);
             }
         }
         catch (exception) {
@@ -186,7 +190,7 @@ const RenterProfile = (props) => {
                 </ul>
             </div>
             <div class="button-menu">
-                <button class="save-button" onClick={saveItem}>Save</button>
+                <button class="save-button" onClick={saveItem}>{saving}</button>
                 <button class="delete-button" onClick={deleteItem}>Delete</button>
             </div>
         </div>

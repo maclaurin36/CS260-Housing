@@ -8,6 +8,7 @@ const HomeListing = (props) => {
     const [listing, setListing] = useState({});
     const [renters, setRenters] = useState([]);
     const [file, setFile] = useState(null);
+    const [saving, setSaving] = useState("Save");
 
     let removeSelf = props.removeSelf;
     let notify = props.notify;
@@ -15,7 +16,7 @@ const HomeListing = (props) => {
     useEffect(() => {
         const getRenters = async () => {
             try {
-                let renterList = await axios.get('/api/renters');
+                let renterList = await axios.get('/api/housing/renters');
                 setRenters(renterList.data.renters);
             }
             catch (error) {
@@ -32,7 +33,7 @@ const HomeListing = (props) => {
         let data = new FormData();
         data.append('file', file, file.name);
         try {
-            let response = await axios.post("/api/imageUpload", data, {
+            let response = await axios.post("/api/housing/imageUpload", data, {
                 headers: {
                     'accept': 'application/json',
                     'Accept-Language': 'en-US,en;q=0.8',
@@ -47,17 +48,18 @@ const HomeListing = (props) => {
     };
 
     const saveItem = async () => {
+        setSaving("Saving...");
         if (file !== null && file !== undefined) {
             listing.photo = await fileUploadHandler();
             setFile(null);
         }
-        
+
         if (listing.renterId === "") {
             listing.renterId = null;
         }
 
         if (listing.isNew) {
-            await axios.post('/api/listings', {
+            await axios.post('/api/housing/listings', {
                 availabilityDate: listing.availabilityDate,
                 location: listing.location,
                 housingType: listing.housingType,
@@ -68,10 +70,10 @@ const HomeListing = (props) => {
                 photo: listing.photo,
                 renterId: listing.renterId
             });
-        
+
         }
         else {
-            await axios.put('/api/listings/' + listing.id, {
+            await axios.put('/api/housing/listings/' + listing.id, {
                 availabilityDate: listing.availabilityDate,
                 location: listing.location,
                 housingType: listing.housingType,
@@ -84,12 +86,14 @@ const HomeListing = (props) => {
             });
         }
         notify();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setSaving("Save");
     };
 
     const deleteItem = async () => {
         try {
             if (listing.isNew === undefined) {
-                await axios.delete("/api/listings/" + listing.id);
+                await axios.delete("/api/housing/listings/" + listing.id);
             }
         }
         catch (exception) {
@@ -148,12 +152,12 @@ const HomeListing = (props) => {
     };
 
     const formatFileName = () => {
-        if (file !== null && file != undefined) {
+        if (file !== null && file !== undefined) {
             return " - " + file.name;
         }
         return "";
     };
-    
+
     const getImageUrl = () => {
         if (listing.photo !== undefined) {
             return "http://ec2-50-18-81-167.us-west-1.compute.amazonaws.com/housing/front-end/src/images/" + listing.photo;
@@ -204,7 +208,7 @@ const HomeListing = (props) => {
                 </ul>
             </div>
             <div class="button-menu">
-                <button class="save-button" onClick={saveItem}>Save</button>
+                <button class="save-button" onClick={saveItem}>{saving}</button>
                 <button class="delete-button" onClick={deleteItem}>Delete</button>
             </div>
         </div>

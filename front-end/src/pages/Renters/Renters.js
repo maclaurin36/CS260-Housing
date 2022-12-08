@@ -9,7 +9,7 @@ const Renters = () => {
 
     const getProfiles = async () => {
         try {
-            let result = await axios.get("/api/renters");
+            let result = await axios.get("/api/housing/renters");
             setProfiles(result.data.renters);
         }
         catch (error) {

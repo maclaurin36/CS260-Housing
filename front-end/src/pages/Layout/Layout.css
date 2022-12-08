@@ -56,3 +56,18 @@
 p {
     margin: 0;
 }
+
+#signout-button {
+    border: none;
+    background: none;
+    color: rgba(0, 0, 0, 0.55);
+    /*padding: 8px 0 8px 20px;*/
+}
+
+#signout-button:hover {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+a {
+    text-decoration: none;
+}

@@ -9,7 +9,7 @@ const Listings = () => {
 
     const getListings = async () => {
         try {
-            let result = await axios.get("/api/listings");
+            let result = await axios.get("/api/housing/listings");
             setListings(result.data.listings);
         }
         catch (error) {
